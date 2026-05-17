@@ -285,34 +285,41 @@ int buscar_campo(const RegistroCSV *registro, const char campo[]) {
 }
 
 //-------------------------------------------------------------------------------
-void leer_valores(const char carpeta[], RegistroCSV registros[], int total) {
-    int i;
+void leer_valores(const char carpeta[], RegistroCSV registros[], int total) {//TAREA :
+    int i = 0;
 
-    for (i = 0; i < total; i++) {// RECORRE ARCHIVO DE LOS FICHEROS GUARDADOS EN REGISTROS
+    for (i = 0; i < total; i++) {// RECORRE ARCHIVO DE LOS FICHEROS GUARDADOS EN REGISTROS , BUCLE PRINCIPAL
         char ruta[MAX_RUTA];
         char linea[MAX_LINEA];
+
         FILE *archivo;
         int j = 0;
 
+        //----
+
         unir_ruta(ruta, carpeta, registros[i].nombre_fichero);//CONSTRUYE RUTA DEL ARCHIVO
-        archivo = fopen(ruta, "r");//ABRE EL ARCHIVO
+        archivo = fopen(ruta, "r");//ABRE EL ARCHIVO "r" = modo lectura
 
         if (archivo == NULL) {//SI NO SE PUEDE ABRIR PASA AL SIGUIENTE FICHERO
             continue;
         }
 
-        while (fgets(linea, sizeof(linea), archivo) != NULL && j < registros[i].total_metadatos) {//LEE LINEA POR LINEA HASTA LLAGAR AL NUMERO DE METADATOS QUE SE CONTO ANTES
+        //----
+
+        while (fgets(linea, sizeof(linea), archivo) != NULL && j < registros[i].total_metadatos) { //LEE LINEA POR LINEA HASTA LLAGAR AL NUMERO DE METADATOS QUE SE CONTO ANTES
             char campo[MAX_TEXTO];
             char valor[MAX_TEXTO];
 
             quitar_salto_linea(linea);
 
-            if (linea_vacia(linea)) {//SI ENCUENTRA UNA LINEA VACIA PARA
+            if (linea_vacia(linea)) {       //SI ENCUENTRA UNA LINEA VACIA PARA
                 break;
             }
 
             if (separar_metadata(linea, campo, valor)) {
-                copiar_texto(registros[i].valores[j], valor, MAX_TEXTO);//SE GUARDA VALOR EN REGISTROS
+
+                copiar_texto(registros[i].valores[j], valor, MAX_TEXTO);    //SE GUARDA VALOR EN REGISTROS
+
                 j++;
             }
         }
@@ -322,7 +329,7 @@ void leer_valores(const char carpeta[], RegistroCSV registros[], int total) {
 }
 
 //---------------------------------------------------------------------------------------------------------------
-void imprimir_metadatos(const RegistroCSV registros[], int total) { //RECORRE FICHEROS Y MUESTRA METADATOS
+void imprimir_metadatos(const RegistroCSV registros[], int total) {             //TAREA : RECORRE FICHEROS Y MUESTRA METADATOS
     int i;
 
     for (i = 0; i < total; i++) {
@@ -332,7 +339,7 @@ void imprimir_metadatos(const RegistroCSV registros[], int total) { //RECORRE FI
         printf("Total metadatos: %d\n", registros[i].total_metadatos);//IMPRIME LOIS METADATOS
 
         for (j = 0; j < registros[i].total_metadatos; j++) {//RECORRE METADATOS DEL FICHERO, IMPRIME CAMPO Y VALOR
-            printf("  %s: %s\n", registros[i].campos[j], registros[i].valores[j]);
+            printf("%s: %s\n", registros[i].campos[j], registros[i].valores[j]);
         }
     }
 }
